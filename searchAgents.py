@@ -288,21 +288,43 @@ class CornersProblem(search.SearchProblem):
         # Please add any code here which you would like to use
         # in initializing the problem
         "*** YOUR CODE HERE ***"
+        """
+        The only parts of the game state you need to reference in your implementation
+        are the starting Pacman position and the location of the four corners.
+        """
+        #referencia a la posicion inicial
+        self.estadoInicial = self.startingPosition 
+
+        #referencia a las equinas
+        self.estadosObjetivo = self.corners
+        self.esquinasVisitadas = []
+        self.numeroEsquinasVisitadas = 0
 
     def getStartState(self):
         """
         Returns the start state (in your state space, not the full Pacman state
         space)
         """
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        return self.estadoInicial
 
     def isGoalState(self, state):
         """
         Returns whether this search state is a goal state of the problem.
         """
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        """
+        hay que verificar si el estado actual es una esquina y
+        si todas las esquinas ya han sido visitadas
+        """
+        flag = False
+        for esquina in self.estadosObjetivo:
+            if state == esquina:
+                if esquina not in self.esquinasVisitadas:
+                    self.esquinasVisitadas.append(esquina)
+                    self.numeroEsquinasVisitadas += 1
+                else:
+                    if self.numeroEsquinasVisitadas == 4:
+                        flag = True
+        return flag
 
     def getSuccessors(self, state):
         """
@@ -325,7 +347,15 @@ class CornersProblem(search.SearchProblem):
             #   hitsWall = self.walls[nextx][nexty]
 
             "*** YOUR CODE HERE ***"
-
+            x,y = state
+            dx, dy = Actions.directionToVector(action)
+            nextx, nexty = int(x + dx), int(y + dy)
+            hitsWall = self.walls[nextx][nexty]
+            if not hitsWall:
+                estado_siguiente = (nextx, nexty)
+                if(estado_siguiente in self.estadosObjetivo):
+                    self.esquinasVisitadas.append(estado_siguiente)
+                successors.append( ( estado_siguiente, action, 1) )
         self._expanded += 1 # DO NOT CHANGE
         return successors
 
