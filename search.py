@@ -86,11 +86,7 @@ def depthFirstSearch(problem):
     print "Is the start a goal?", problem.isGoalState(problem.getStartState())
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
-    print "Start:", problem.getStartState()
-    print "Is the start a goal?", problem.isGoalState(problem.getStartState())
-    print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """"""
-    
     estadoInicial = problem.getStartState() #estado inicial del problema
     porVisitar = util.Stack() #se usara una pila para el manejo de los estados no visitados(frontera)
     visitados = [] #elementos ya visitados
@@ -102,35 +98,30 @@ def depthFirstSearch(problem):
             return acciones
         if not (nuevoEstado in visitados):
             visitados.append(nuevoEstado)
-            print "Estado equinas: " + str(problem.esquinasVisitadas)
             temp2 = problem.getSuccessors(nuevoEstado)
             for estadoSucesor, accionSucesor, costoSucesor in temp2:
                 porVisitar.push(((costoNuevoEstado + costoSucesor, 0, estadoSucesor),
                             acciones + [accionSucesor]))
     """"""
-    #util.raiseNotDefined()
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
     estadoInicial = problem.getStartState() #estado inicial del problema
-    porVisitar = util.Queue() #se usara una pila para el manejo de los estados no visitados(frontera)
+    porVisitar = util.Stack() #se usara una pila para el manejo de los estados no visitados(frontera)
     visitados = [] #elementos ya visitados
-    visited = set()
     direccionesIniciales = []
     porVisitar.push( ( (0, 0, estadoInicial), direccionesIniciales ) ) #se guarda el estado y las direcciones
     while not porVisitar.isEmpty():
         (costoNuevoEstado, temp, nuevoEstado), acciones = porVisitar.pop()
         if problem.isGoalState(nuevoEstado):
             return acciones
-        if not (nuevoEstado in visited):
-            #visitados.append(nuevoEstado)
-            visited.add(nuevoEstado)
-            for estadoSucesor, accionSucesor, costoSucesor in problem.getSuccessors(nuevoEstado):
+        if not (nuevoEstado in visitados):
+            visitados.append(nuevoEstado)
+            temp2 = problem.getSuccessors(nuevoEstado)
+            for estadoSucesor, accionSucesor, costoSucesor in temp2:
                 porVisitar.push(((costoNuevoEstado + costoSucesor, 0, estadoSucesor),
                             acciones + [accionSucesor]))
-
-    #util.raiseNotDefined()
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""

@@ -288,17 +288,12 @@ class CornersProblem(search.SearchProblem):
         # Please add any code here which you would like to use
         # in initializing the problem
         "*** YOUR CODE HERE ***"
-        """
-        The only parts of the game state you need to reference in your implementation
-        are the starting Pacman position and the location of the four corners.
-        """
-        #referencia a la posicion inicial
-        self.estadoInicial = self.startingPosition 
 
-        #referencia a las equinas
+        #referencia a la posicion inicial y la lista de esquinas visitadas
+        self.estadoInicial = (self.startingPosition, [] )
+
+        #referencia a las 4 esquinas
         self.estadosObjetivo = self.corners
-        self.esquinasVisitadas = []
-        self.numeroEsquinasVisitadas = 0
 
     def getStartState(self):
         """
@@ -316,14 +311,15 @@ class CornersProblem(search.SearchProblem):
         si todas las esquinas ya han sido visitadas
         """
         flag = False
-        for esquina in self.estadosObjetivo:
-            if state == esquina:
-                if esquina not in self.esquinasVisitadas:
-                    self.esquinasVisitadas.append(esquina)
-                    self.numeroEsquinasVisitadas += 1
-                else:
-                    if self.numeroEsquinasVisitadas == 4:
-                        flag = True
+        estado_actual = state[0]
+        esquinas_visitadas = state[1]
+        #si el estado actual es una esquina, se verifica si ya fue visitada
+        #si no fue visitada, se agrega a las esquinas visitadas
+        if estado_actual in self.estadosObjetivo:
+            if not (estado_actual in esquinas_visitadas):
+                esquinas_visitadas.append(estado_actual)
+            flag = len(esquinas_visitadas) == 4 #es un estado objetivo si las 4 esquinas fueron visitadas
+
         return flag
 
     def getSuccessors(self, state):
@@ -336,7 +332,6 @@ class CornersProblem(search.SearchProblem):
             state, 'action' is the action required to get there, and 'stepCost'
             is the incremental cost of expanding to that successor
         """
-
         successors = []
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
             # Add a successor state to the successor list if the action is legal
@@ -347,15 +342,18 @@ class CornersProblem(search.SearchProblem):
             #   hitsWall = self.walls[nextx][nexty]
 
             "*** YOUR CODE HERE ***"
-            x,y = state
+            x,y = state[0]
+            esquinas_visitadas = state[1]
             dx, dy = Actions.directionToVector(action)
             nextx, nexty = int(x + dx), int(y + dy)
-            hitsWall = self.walls[nextx][nexty]
-            if not hitsWall:
-                estado_siguiente = (nextx, nexty)
-                if(estado_siguiente in self.estadosObjetivo):
-                    self.esquinasVisitadas.append(estado_siguiente)
-                successors.append( ( estado_siguiente, action, 1) )
+            # hitsWall = self.walls[nextx][nexty]
+            estado_siguiente = (nextx, nexty)
+            if not self.walls[nextx][nexty]:
+                esquinas_sucesor = list(esquinas_visitadas) 
+                if estado_siguiente in self.estadosObjetivo:
+                    if not (estado_siguiente in esquinas_sucesor):
+                        esquinas_sucesor.append( estado_siguiente )
+                successors.append(((estado_siguiente, esquinas_sucesor), action, 1))
         self._expanded += 1 # DO NOT CHANGE
         return successors
 
