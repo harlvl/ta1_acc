@@ -91,6 +91,8 @@ def depthFirstSearch(problem):
     porVisitar = util.Stack() #se usara una pila para el manejo de los estados no visitados(frontera)
     visitados = [] #elementos ya visitados
     direccionesIniciales = []
+    #el segundo valor es el costo de la heuristica
+    #como dfs no usa ninguna, su valor es 0 (lo mismo aplica para bfs)
     porVisitar.push( ( (0, 0, estadoInicial), direccionesIniciales ) ) #se guarda el estado y las direcciones
     while not porVisitar.isEmpty():
         (costoNuevoEstado, temp, nuevoEstado), acciones = porVisitar.pop()
@@ -108,7 +110,7 @@ def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
     estadoInicial = problem.getStartState() #estado inicial del problema
-    porVisitar = util.Stack() #se usara una pila para el manejo de los estados no visitados(frontera)
+    porVisitar = util.Queue() #se usara una cola para el manejo de los estados no visitados(frontera)
     visitados = [] #elementos ya visitados
     direccionesIniciales = []
     porVisitar.push( ( (0, 0, estadoInicial), direccionesIniciales ) ) #se guarda el estado y las direcciones
@@ -135,10 +137,32 @@ def nullHeuristic(state, problem=None):
     """
     return 0
 
+def costo_mov(((costo, heuristica, estado), direction)):
+    #se pone la tupla como argumento pues asi son los items que se agregan a la estructura usada
+    return costo + heuristica
+
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    estadoInicial = problem.getStartState() #estado inicial del problema
+    #se usara una cola de prioridad para el manejo de los estados no visitados(frontera)
+    #la funcion costo_mov se usa para calcular la prioridad del estado siguiente
+    porVisitar = util.PriorityQueueWithFunction(costo_mov)
+    # porVisitar = util.PriorityQueue() da error de tipo
+    visitados = [] #elementos ya visitados
+    direccionesIniciales = []
+    porVisitar.push( ( (0, 0, estadoInicial), direccionesIniciales ) ) #se guarda el estado y las direcciones
+    while not porVisitar.isEmpty():
+        (costoNuevoEstado, temp, nuevoEstado), acciones = porVisitar.pop()
+        if problem.isGoalState(nuevoEstado):
+            return acciones
+        if not (nuevoEstado in visitados):
+            visitados.append(nuevoEstado)
+            temp2 = problem.getSuccessors(nuevoEstado)
+            for estadoSucesor, accionSucesor, costoSucesor in temp2:
+                porVisitar.push(((costoNuevoEstado + costoSucesor, heuristic(estadoSucesor, problem), estadoSucesor),
+                            acciones + [accionSucesor]))
+    #util.raiseNotDefined()
 
 
 # Abbreviations
