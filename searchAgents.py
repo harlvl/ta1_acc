@@ -372,9 +372,11 @@ class CornersProblem(search.SearchProblem):
 
 #distancia manhattan (pregunta 3)
 def manhattanDistanceCornersProblem(state, problem):
+    if problem.isGoalState(state):
+        return 0
     posicion_actual = state[0]
     distancia = 0
-    esquinas = problem.estadosObjetivo
+    esquinas = problem.corners
 
     esquinas_sin_visitar = []
     for item in esquinas:
@@ -390,7 +392,8 @@ def manhattanDistanceCornersProblem(state, problem):
                 dist_minima = temp
                 esquina_minima = esquina
         posicion_actual = esquina_minima
-        esquinas_sin_visitar.remove(esquina_minima)
+        if esquina_minima in esquinas_sin_visitar:
+            esquinas_sin_visitar.remove(esquina_minima)
         distancia = distancia + dist_minima
 
     return distancia
@@ -421,8 +424,8 @@ def cornersHeuristic(state, problem):
 
     "*** YOUR CODE HERE ***"
     #aqui se devuelven las heuristicas a implementar en las preguntas 3 y 4
-    distancia = manhattanDistanceCornersProblem(state, problem)
-    # distancia = euclideanDistanceCornersProblem(state, problem)
+    # distancia = manhattanDistanceCornersProblem(state, problem)
+    distancia = euclideanDistanceCornersProblem(state, problem)
     # return 0 # Default to trivial solution
     return distancia
 
