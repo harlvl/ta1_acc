@@ -424,8 +424,8 @@ def cornersHeuristic(state, problem):
 
     "*** YOUR CODE HERE ***"
     #aqui se devuelven las heuristicas a implementar en las preguntas 3 y 4
-    # distancia = manhattanDistanceCornersProblem(state, problem)
-    distancia = euclideanDistanceCornersProblem(state, problem)
+    distancia = manhattanDistanceCornersProblem(state, problem)
+    # distancia = euclideanDistanceCornersProblem(state, problem)
     # return 0 # Default to trivial solution
     return distancia
 
