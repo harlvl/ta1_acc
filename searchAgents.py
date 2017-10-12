@@ -400,8 +400,28 @@ def eucDist(xy1, xy2):
     return ( (xy1[0] - xy2[0]) ** 2 + (xy1[1] - xy2[1]) ** 2 ) ** 0.5
 
 def euclideanDistanceCornersProblem(state, problem):
-    pass
-    #falta implementar
+    posicion_actual = state[0]
+    distancia = 0
+    esquinas = problem.estadosObjetivo
+
+    esquinas_sin_visitar = []
+    for item in esquinas:
+        if not(item in state[1]):
+            esquinas_sin_visitar.append(item)
+
+    #hallar la distancia minima desde el estado actual hacia la esquina sin visitar mas cercana
+    while len(esquinas_sin_visitar) != 0:
+        dist_minima = 999999
+        for esquina in esquinas_sin_visitar:
+            temp = eucDist(posicion_actual, esquina)
+            if temp < dist_minima:
+                dist_minima = temp
+                esquina_minima = esquina
+        posicion_actual = esquina_minima
+        esquinas_sin_visitar.remove(esquina_minima)
+        distancia = distancia + dist_minima
+
+    return distancia
 
 def cornersHeuristic(state, problem):
     """
@@ -421,8 +441,8 @@ def cornersHeuristic(state, problem):
 
     "*** YOUR CODE HERE ***"
     #aqui se devuelven las heuristicas a implementar en las preguntas 3 y 4
-    distancia = manhattanDistanceCornersProblem(state, problem)
-    # distancia = euclideanDistanceCornersProblem(state, problem)
+    #distancia = manhattanDistanceCornersProblem(state, problem)
+    distancia = euclideanDistanceCornersProblem(state, problem)
     # return 0 # Default to trivial solution
     return distancia
 
